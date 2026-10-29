@@ -1,0 +1,15 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Free Website Audit | AH Zubayer</title><meta name="description" content="Enter your website URL and get an instant score with a list of fixes."><meta property="og:title" content="Free Website Audit | AH Zubayer"><meta property="og:description" content="Enter your website URL and get an instant score with a list of fixes.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='24' fill='%2300de51'/><text x='50' y='68' font-size='52' font-weight='800' text-anchor='middle' fill='%23041'>AH</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;600;700&family=Manrope:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/style.css"></head><body><div id="nav"></div><main>
+<section><div class="w"><h1 style="font-size:clamp(40px,7vw,80px)">Free website audit</h1><p class="lead">Enter your domain. You get a score out of 100 and a list of what to fix.</p>
+<form id="f" style="grid-template-columns:1fr auto;margin-top:36px"><input id="u" placeholder="example.com" required aria-label="Website URL"><button class="btn p" id="b">Check my website</button></form>
+<div id="out" style="margin-top:48px"></div></div></section>
+<script>f.onsubmit=async e=>{e.preventDefault();b.disabled=true;b.textContent='Checking...';out.innerHTML='';
+const {ok,d}=await post('/api/audit',{url:u.value});b.disabled=false;b.textContent='Check my website';
+if(!ok)return out.innerHTML=`<div class="msg er">${esc(d.error||'Something went wrong.')}</div>`;
+const c=d.score>=75?'#00de51':d.score>=50?'#ffb020':'#ff5c5c';
+out.innerHTML=`<div class="score"><div class="ring" style="--p:${d.score};--c:${c}"><div><span>${d.score}<small>Grade ${d.grade}</small></span></div></div><div><h2 style="margin:0">${esc(new URL(d.url).hostname)}</h2><p class="mu">Responded in ${d.ms}ms. HTML size ${d.kb}KB.</p><a class="btn p" style="margin-top:16px" href="/contact.html">Get these fixed</a></div></div><div style="margin-top:36px">`+d.checks.map(k=>`<div class="chk ${k.ok?'':'bad'}"><b>${k.ok?'✓':'!'}</b><div><strong>${esc(k.name)}</strong><p>${esc(k.tip)}</p></div><span class="mu">${k.points}/${k.max}</span></div>`).join('')+'</div>'};</script>
+</main><div id="foot"></div><script src="/js/app.js"></script>
+</body></html>

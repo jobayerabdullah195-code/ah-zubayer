@@ -1,0 +1,14 @@
+const NAV=[['/','Home'],['/portfolio.html','Portfolio'],['/services.html','Services'],['/blog.html','Blog'],['/audit.html','Website Audit'],['/contact.html','Contact']];
+const here=location.pathname.replace(/index\.html$/,'')||'/';
+document.getElementById('nav').outerHTML=`<header class="nav"><div class="w"><a class="logo" href="/">AH<i>.</i>Zubayer</a><nav id="m">${NAV.map(([h,t])=>`<a href="${h}" class="${h===here?'on':''}">${t}</a>`).join('')}</nav><button class="burger" aria-label="Menu" onclick="m.classList.toggle('open')">☰</button></div></header>`;
+document.getElementById('foot').outerHTML=`<footer><div class="w"><span>© ${new Date().getFullYear()} AH Zubayer. Website maker.</span><span>hello@ahzubayer.com</span></div></footer>`;
+const io=new IntersectionObserver(e=>e.forEach(x=>{if(x.isIntersecting){x.target.classList.add('in');io.unobserve(x.target)}}),{threshold:.15});
+document.querySelectorAll('.rv').forEach(n=>io.observe(n));
+window.esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+window.post=(u,b)=>fetch(u,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(b)}).then(async r=>({ok:r.ok,d:await r.json().catch(()=>({}))}));
+(()=>{if(location.pathname.startsWith('/admin'))return;
+const g=(k,s)=>{try{const st=s?sessionStorage:localStorage;let v=st.getItem(k);if(!v){v=crypto.randomUUID();st.setItem(k,v)}return v}catch{return'x'}};
+const t0=Date.now();let id=null;
+fetch('/api/track',{method:'POST',body:JSON.stringify({vid:g('vid'),sid:g('sid',1),path:location.pathname,ref:document.referrer})}).then(r=>r.json()).then(d=>id=d.id).catch(()=>{});
+addEventListener('pagehide',()=>{if(id)navigator.sendBeacon('/api/track',new Blob([JSON.stringify({type:'ping',id,duration:Math.round((Date.now()-t0)/1000)})],{type:'application/json'}))});
+})();
